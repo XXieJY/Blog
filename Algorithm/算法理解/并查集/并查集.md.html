@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>并查集</title>
+      <style>.markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(171, 178, 191); overflow: auto; background-color: rgb(40, 44, 52); }
+.markdown-preview:not([data-use-github-style]) > :first-child { margin-top: 0px; }
+.markdown-preview:not([data-use-github-style]) h1, .markdown-preview:not([data-use-github-style]) h2, .markdown-preview:not([data-use-github-style]) h3, .markdown-preview:not([data-use-github-style]) h4, .markdown-preview:not([data-use-github-style]) h5, .markdown-preview:not([data-use-github-style]) h6 { line-height: 1.2; margin-top: 1.5em; margin-bottom: 0.5em; color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) h1 { font-size: 2.4em; font-weight: 300; }
+.markdown-preview:not([data-use-github-style]) h2 { font-size: 1.8em; font-weight: 400; }
+.markdown-preview:not([data-use-github-style]) h3 { font-size: 1.5em; font-weight: 500; }
+.markdown-preview:not([data-use-github-style]) h4 { font-size: 1.2em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h5 { font-size: 1.1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h6 { font-size: 1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) strong { color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) del { color: rgb(124, 135, 156); }
+.markdown-preview:not([data-use-github-style]) a, .markdown-preview:not([data-use-github-style]) a code { color: rgb(82, 139, 255); }
+.markdown-preview:not([data-use-github-style]) img { max-width: 100%; }
+.markdown-preview:not([data-use-github-style]) > p { margin-top: 0px; margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) > ul, .markdown-preview:not([data-use-github-style]) > ol { margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) blockquote { margin: 1.5em 0px; font-size: inherit; color: rgb(124, 135, 156); border-color: rgb(75, 83, 98); border-width: 4px; }
+.markdown-preview:not([data-use-github-style]) hr { margin: 3em 0px; border-top-width: 2px; border-top-style: dashed; border-top-color: rgb(75, 83, 98); background: none; }
+.markdown-preview:not([data-use-github-style]) table { margin: 1.5em 0px; }
+.markdown-preview:not([data-use-github-style]) th { color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) th, .markdown-preview:not([data-use-github-style]) td { padding: 0.66em 1em; border: 1px solid rgb(75, 83, 98); }
+.markdown-preview:not([data-use-github-style]) code { color: rgb(255, 255, 255); background-color: rgb(58, 63, 75); }
+.markdown-preview:not([data-use-github-style]) pre.editor-colors { margin: 1.5em 0px; padding: 1em; font-size: 0.92em; border-radius: 3px; background-color: rgb(49, 54, 63); }
+.markdown-preview:not([data-use-github-style]) kbd { color: rgb(255, 255, 255); border-width: 1px 1px 2px; border-style: solid; border-color: rgb(75, 83, 98) rgb(75, 83, 98) rgb(62, 68, 81); background-color: rgb(58, 63, 75); }
+.markdown-preview[data-use-github-style] { font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 1.6; word-wrap: break-word; padding: 30px; font-size: 16px; color: rgb(51, 51, 51); overflow: scroll; background-color: rgb(255, 255, 255); }
+.markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview[data-use-github-style] h1, .markdown-preview[data-use-github-style] h2, .markdown-preview[data-use-github-style] h3, .markdown-preview[data-use-github-style] h4, .markdown-preview[data-use-github-style] h5, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview[data-use-github-style] h1 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview[data-use-github-style] h1 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] p, .markdown-preview[data-use-github-style] blockquote, .markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol, .markdown-preview[data-use-github-style] dl, .markdown-preview[data-use-github-style] table, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; border: 0px none; background-color: rgb(231, 231, 231); }
+.markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview[data-use-github-style] ul.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview[data-use-github-style] ul ul, .markdown-preview[data-use-github-style] ul ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left-width: 4px; border-left-style: solid; border-left-color: rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: keep-all; }
+.markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview[data-use-github-style] table th, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] table tr { border-top-width: 1px; border-top-style: solid; border-top-color: rgb(204, 204, 204); background-color: rgb(255, 255, 255); }
+.markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] code, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; border-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157); }
+.markdown-preview[data-use-github-style] code::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview[data-use-github-style] code::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: " "; }
+.markdown-preview[data-use-github-style] code br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; border: 0px; background: transparent; }
+.markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] .highlight pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; border-radius: 3px; background-color: rgb(247, 247, 247); }
+.markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview[data-use-github-style] pre code, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; border: 0px; background-color: transparent; }
+.markdown-preview[data-use-github-style] pre code::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; border-style: solid; border-width: 1px; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; background-color: rgb(252, 252, 252); }
+.markdown-preview[data-use-github-style] a { color: rgb(51, 122, 183); }
+.markdown-preview[data-use-github-style] code { color: inherit; }
+.markdown-preview[data-use-github-style] pre.editor-colors { padding: 0.8em 1em; margin-bottom: 1em; font-size: 0.85em; border-radius: 4px; overflow: auto; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors::shadow .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors::shadow .horizontal-scrollbar { visibility: hidden; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors:hover::shadow .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors:hover::shadow .horizontal-scrollbar { visibility: visible; }
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+
+.spell-check-misspelling .region {
+  border-bottom: 2px dotted rgba(255, 51, 51, 0.75);
+}
+
+pre.editor-colors,
+.host {
+  background-color: #282c34;
+  color: #abb2bf;
+}
+pre.editor-colors .line.cursor-line,
+.host .line.cursor-line {
+  background-color: rgba(153, 187, 255, 0.04);
+}
+pre.editor-colors .invisible,
+.host .invisible {
+  color: #abb2bf;
+}
+pre.editor-colors .cursor,
+.host .cursor {
+  border-left: 2px solid #528bff;
+}
+pre.editor-colors .selection .region,
+.host .selection .region {
+  background-color: #3e4451;
+}
+pre.editor-colors .bracket-matcher .region,
+.host .bracket-matcher .region {
+  border-bottom: 1px solid #528bff;
+  box-sizing: border-box;
+}
+pre.editor-colors .invisible-character,
+.host .invisible-character {
+  color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .indent-guide,
+.host .indent-guide {
+  color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .wrap-guide,
+.host .wrap-guide {
+  background-color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .gutter .line-number,
+.host .gutter .line-number {
+  color: #636d83;
+  -webkit-font-smoothing: antialiased;
+}
+pre.editor-colors .gutter .line-number.cursor-line,
+.host .gutter .line-number.cursor-line {
+  color: #abb2bf;
+  background-color: #2c313a;
+}
+pre.editor-colors .gutter .line-number.cursor-line-no-selection,
+.host .gutter .line-number.cursor-line-no-selection {
+  background-color: transparent;
+}
+pre.editor-colors .gutter .line-number .icon-right,
+.host .gutter .line-number .icon-right {
+  color: #abb2bf;
+}
+pre.editor-colors .gutter:not(.git-diff-icon) .line-number.git-line-removed.git-line-removed::before,
+.host .gutter:not(.git-diff-icon) .line-number.git-line-removed.git-line-removed::before {
+  bottom: -3px;
+}
+pre.editor-colors .gutter:not(.git-diff-icon) .line-number.git-line-removed::after,
+.host .gutter:not(.git-diff-icon) .line-number.git-line-removed::after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 25px;
+  border-bottom: 1px dotted rgba(224, 82, 82, 0.5);
+  pointer-events: none;
+}
+pre.editor-colors .gutter .line-number.folded,
+.host .gutter .line-number.folded,
+pre.editor-colors .gutter .line-number:after,
+.host .gutter .line-number:after,
+pre.editor-colors .fold-marker:after,
+.host .fold-marker:after {
+  color: #abb2bf;
+}
+.comment {
+  color: #5c6370;
+  font-style: italic;
+}
+.entity.name.type {
+  color: #e5c07b;
+}
+.entity.other.inherited-class {
+  color: #98c379;
+}
+.keyword {
+  color: #c678dd;
+}
+.keyword.control {
+  color: #c678dd;
+}
+.keyword.operator {
+  color: #abb2bf;
+}
+.keyword.other.special-method {
+  color: #61afef;
+}
+.keyword.other.unit {
+  color: #d19a66;
+}
+.storage {
+  color: #c678dd;
+}
+.storage.type.annotation,
+.storage.type.primitive {
+  color: #c678dd;
+}
+.storage.modifier.package,
+.storage.modifier.import {
+  color: #abb2bf;
+}
+.constant {
+  color: #d19a66;
+}
+.constant.variable {
+  color: #d19a66;
+}
+.constant.character.escape {
+  color: #56b6c2;
+}
+.constant.numeric {
+  color: #d19a66;
+}
+.constant.other.color {
+  color: #56b6c2;
+}
+.constant.other.symbol {
+  color: #56b6c2;
+}
+.variable {
+  color: #e06c75;
+}
+.variable.interpolation {
+  color: #be5046;
+}
+.variable.parameter {
+  color: #abb2bf;
+}
+.string {
+  color: #98c379;
+}
+.string.regexp {
+  color: #56b6c2;
+}
+.string.regexp .source.ruby.embedded {
+  color: #e5c07b;
+}
+.string.other.link {
+  color: #e06c75;
+}
+.punctuation.definition.comment {
+  color: #5c6370;
+}
+.punctuation.definition.method-parameters,
+.punctuation.definition.function-parameters,
+.punctuation.definition.parameters,
+.punctuation.definition.separator,
+.punctuation.definition.seperator,
+.punctuation.definition.array {
+  color: #abb2bf;
+}
+.punctuation.definition.heading,
+.punctuation.definition.identity {
+  color: #61afef;
+}
+.punctuation.definition.bold {
+  color: #e5c07b;
+  font-weight: bold;
+}
+.punctuation.definition.italic {
+  color: #c678dd;
+  font-style: italic;
+}
+.punctuation.section.embedded {
+  color: #be5046;
+}
+.punctuation.section.method,
+.punctuation.section.class,
+.punctuation.section.inner-class {
+  color: #abb2bf;
+}
+.support.class {
+  color: #e5c07b;
+}
+.support.type {
+  color: #56b6c2;
+}
+.support.function {
+  color: #56b6c2;
+}
+.support.function.any-method {
+  color: #61afef;
+}
+.entity.name.function {
+  color: #61afef;
+}
+.entity.name.class,
+.entity.name.type.class {
+  color: #e5c07b;
+}
+.entity.name.section {
+  color: #61afef;
+}
+.entity.name.tag {
+  color: #e06c75;
+}
+.entity.other.attribute-name {
+  color: #d19a66;
+}
+.entity.other.attribute-name.id {
+  color: #61afef;
+}
+.meta.class {
+  color: #e5c07b;
+}
+.meta.class.body {
+  color: #abb2bf;
+}
+.meta.method-call,
+.meta.method {
+  color: #abb2bf;
+}
+.meta.definition.variable {
+  color: #e06c75;
+}
+.meta.link {
+  color: #d19a66;
+}
+.meta.require {
+  color: #61afef;
+}
+.meta.selector {
+  color: #c678dd;
+}
+.meta.separator {
+  background-color: #373b41;
+  color: #abb2bf;
+}
+.meta.tag {
+  color: #abb2bf;
+}
+.none {
+  color: #abb2bf;
+}
+.invalid.deprecated {
+  color: #523d14 !important;
+  background-color: #e0c285 !important;
+}
+.invalid.illegal {
+  color: #ffffff !important;
+  background-color: #e05252 !important;
+}
+.markup.bold {
+  color: #d19a66;
+  font-weight: bold;
+}
+.markup.changed {
+  color: #c678dd;
+}
+.markup.deleted {
+  color: #e06c75;
+}
+.markup.italic {
+  color: #c678dd;
+  font-style: italic;
+}
+.markup.heading .punctuation.definition.heading {
+  color: #61afef;
+}
+.markup.inserted {
+  color: #98c379;
+}
+.markup.list {
+  color: #e06c75;
+}
+.markup.quote {
+  color: #d19a66;
+}
+.markup.raw {
+  color: #98c379;
+}
+.source.cs .keyword.operator {
+  color: #c678dd;
+}
+.source.css .property-name,
+.source.css .property-value {
+  color: #828997;
+}
+.source.css .property-name.support,
+.source.css .property-value.support {
+  color: #abb2bf;
+}
+.source.gfm .markup {
+  -webkit-font-smoothing: auto;
+}
+.source.gfm .markup.heading {
+  color: #e06c75;
+}
+.source.gfm .markup.link {
+  color: #c678dd;
+}
+.source.gfm .link .entity {
+  color: #61afef;
+}
+.source.ini .keyword.other.definition.ini {
+  color: #e06c75;
+}
+.source.java .storage.modifier.import {
+  color: #e5c07b;
+}
+.source.java .storage.type {
+  color: #e5c07b;
+}
+.source.java-properties .meta.key-pair {
+  color: #e06c75;
+}
+.source.java-properties .meta.key-pair > .punctuation {
+  color: #abb2bf;
+}
+.source.json .meta.structure.dictionary.json > .string.quoted.json {
+  color: #e06c75;
+}
+.source.json .meta.structure.dictionary.json > .string.quoted.json > .punctuation.string {
+  color: #e06c75;
+}
+.source.json .meta.structure.dictionary.json > .value.json > .string.quoted.json,
+.source.json .meta.structure.array.json > .value.json > .string.quoted.json,
+.source.json .meta.structure.dictionary.json > .value.json > .string.quoted.json > .punctuation,
+.source.json .meta.structure.array.json > .value.json > .string.quoted.json > .punctuation {
+  color: #98c379;
+}
+.source.json .meta.structure.dictionary.json > .constant.language.json,
+.source.json .meta.structure.array.json > .constant.language.json {
+  color: #56b6c2;
+}
+.source.ruby .constant.other.symbol > .punctuation {
+  color: inherit;
+}
+.source.python .keyword.operator.logical.python {
+  color: #c678dd;
+}
+.source.python .variable.parameter {
+  color: #d19a66;
+}
+</style>
+  </head>
+  <body class='markdown-preview'><h2 id="1-">1、并查集简介</h2>
+<p>&emsp;&emsp;并查集，英文名为disjointset，即<strong>不相交集合</strong>，用来维护一个动态不相交集的集合。为了便于理解，我们设想一个情景：有<code>n</code>个不同的元素，要分成若干不相交的集合，然后我们可以做以下两个操作：</p>
+<blockquote>
+<ul>
+<li>合<strong>并</strong>两个集合</li>
+<li>给定一个元素，<strong>查</strong>找包含该元素的唯一集合</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;一个查操作，一个并操作，<strong>并查集</strong>就是这么来的。我们将这两个操作用函数表达一下：</p>
+<blockquote>
+<ul>
+<li><strong>union(x, y)</strong>：将分别包含x，y的两个动态集合合并为一个集合，也就是对这两个集合取并集</li>
+<li><strong>find(x)</strong>：返回包含x的（唯一）集合的代表</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;除了这两个操作之外，《算法导论》一书第21章还提到了一般还需要我们建立一个集合[1]，定义如下：</p>
+<blockquote>
+<ul>
+<li><strong>make_set(x)</strong>：建立一个新的集合，包含唯一元素x</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;下面我们在实现并查集的时候，主要实现这三个方法，其中 <strong>union(x,y)</strong> 和 <strong>find(x)</strong> 是讨论的重点，而 <strong>make_set(x)</strong> 在许多时候是不需要专门实现的，或者说实现比较简单，在这里就忽略了。</p>
+<h2 id="2-">2、并查集实现</h2>
+<p>&emsp;&emsp;在实现并查集的时候，我们需要先考虑两个问题：一个是集合如何表示；另一个是集合的代表如何表示。当然在比较不同实现方式的时候，需要考虑复杂度的问题，这里我们主要讨论时间复杂度，从这个角度考虑，其实现方案有两种[2]：</p>
+<blockquote>
+<ul>
+<li>保证<code>find</code>操作能够以常数最坏情形运行时间执行</li>
+<li>保证<code>union</code>操作能够以常数最坏情形运行时间执行
+&emsp;&emsp;已经证明二者不能同时以常数最坏情形运行时间执行[2]。具体的实现方法如下所述。</li>
+</ul>
+</blockquote>
+<h3 id="2-1-">2.1、以最小元素代表集合</h3>
+<p>&emsp;&emsp;这种方法以集合中最小的元素来标识该集合，我们在具体实现的时候用一个数组<code>sets]</code>来表示元素所属集合，<code>set[i]</code>的值表示元素<code>i</code>所属的集合（也就是所属集合中最小的那个元素值）。举个例子，假设当前有<code>{1, 3, 4}</code>，<code>{2, 5}</code>，<code>{6, 7, 9}</code>,<code>{8}</code>四个集合，那么它们表示如下：</p>
+<table>
+<thead>
+<tr>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>... i</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>6</td>
+<td>6</td>
+<td>8</td>
+<td>6</td>
+<td><strong>...sets[i]</strong></td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;这样表示好了之后，进行<code>find</code>操作就比较简单了，可以直接返回所属集合，只需<code>O(1)</code>的时间。而对于<code>union</code>操作，需要将元素<code>x</code>所属集合（假定为<code>Sx</code>）与元素<code>y</code>所属集合（假定为<code>Sy</code>）合并，我们选取<code>Sx</code>与<code>Sy</code>中较小的作为新集合的代表。所以这两个集合中，有一个是不需要改动的，而另一个则需要将其元素所属集合进行改变，这就需要遍历所有元素，时间复杂度为<code>O(N)</code>。<br>&emsp;&emsp;<code>find</code>和<code>union</code>操作的代码实现如下：     </p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="storage type c"><span>int</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>find_set</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="storage type c"><span>int</span></span><span>&nbsp;x</span><span class="punctuation section parens end c"><span>)</span></span></span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>&nbsp;sets[x];</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></span></div><div class="line"><span class="source cpp"><span>&nbsp;</span></span></div><div class="line"><span class="source cpp"><span class="storage type c"><span>void</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>union_set</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="storage type c"><span>int</span></span><span>&nbsp;x,&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;y</span><span class="punctuation section parens end c"><span>)</span></span></span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(x&nbsp;==&nbsp;y)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>find_set</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>x);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>find_set</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>y);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(x&nbsp;==&nbsp;y)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;small&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>min</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>x,&nbsp;y);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;large&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>max</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>x,&nbsp;y);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>for</span></span><span>(</span><span class="storage type c"><span>int</span></span><span>&nbsp;i&nbsp;=&nbsp;</span><span class="constant numeric c"><span>0</span></span><span>;&nbsp;i&nbsp;&lt;&nbsp;MAXN;&nbsp;i++)</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(sets[i]&nbsp;==&nbsp;large)</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sets[i]&nbsp;=&nbsp;small;</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="punctuation section block end c"><span>}</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></span></div></pre>
+<p>&emsp;&emsp;在这里，我们是选择最小元素代表集合。其实，对于选取什么代表集合是无所谓的，只要可以保证<code>find(a) == find(b)</code>当且仅当<code>a</code>和<code>b</code>在同一集合中。<br>&emsp;&emsp;这个算法的<code>union</code>操作需要扫描数组，时间复杂度为<code>O(N)</code>，于是连续<code>N-1</code>次<code>union</code>操作（这也是最大值）就要花费<code>O(N^2)</code>的时间，如果<code>union</code>操作比较多，这个时间复杂度是不能接受的，所以需要继续改进。<br>&emsp;&emsp;下面解释一下上句话中，为什么<code>N-1</code>是最大值。对于<code>N</code>个元素组成的一组不相交集合，集合个数最多有<code>N</code>个，这时候每个集合就一个元素，而一次<code>union</code>操作就会减少一个集合，当只有一个集合的时候（也就是包含所有元素的集合），就无法进行<code>union</code>操作了，所以<code>union</code>操作最多有<code>N-1</code>次。</p>
+<h3 id="2-2-">2.2、以树表示集合</h3>
+<p>&emsp;&emsp;我们用一颗有根树表示一个集合，树根就是集合的代表。我们在实现的时候，还是用一个数组<code>sets[]</code>来表示树中结点之间的关系：</p>
+<blockquote>
+<ul>
+<li><code>sets[i]=i</code>，代表元素<code>i</code>是当前（集合）树的根节点，代表着所属的集合</li>
+<li><code>sets[i]=j，ｉ!=j</code>，表示<code>i</code>的父节点是<code>j</code>，<code>i</code>和<code>j</code>在同一个集合中</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;在这种表示方法中，每个集合是一个树，一组集合就构成了一个森林。对于<code>find</code>操作，只要向上找到树的根节点即可，所需时间和结点的深度成正比。对于<code>union</code>操作，我们将一颗树的根指向另一颗树的根，具体实现时，对于<code>union(x,y)</code>，我们选择将<code>y</code>元素所在树的根指向<code>x</code>元素所属的树的根。
+&emsp;&emsp;<code>find</code>和<code>union</code>操作的代码实现如下：</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="storage type c"><span>int</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>find_set</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="storage type c"><span>int</span></span><span>&nbsp;x</span><span class="punctuation section parens end c"><span>)</span></span></span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;temp&nbsp;=&nbsp;x;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>while</span></span><span>(sets[temp]&nbsp;!=&nbsp;temp)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp&nbsp;=&nbsp;sets[temp];</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>&nbsp;temp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></span></div><div class="line"><span class="source cpp"><span>&nbsp;</span></span></div><div class="line"><span class="source cpp"><span class="storage type c"><span>void</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>union_set</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="storage type c"><span>int</span></span><span>&nbsp;x,&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;y</span><span class="punctuation section parens end c"><span>)</span></span></span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(x&nbsp;==&nbsp;y)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>find_set</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>x);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>find_set</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>y);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(x&nbsp;==&nbsp;y)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;sets[y]&nbsp;=&nbsp;x;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></span></div></pre>
+<p>&emsp;&emsp;我们来具体讨论一下这种方法的时间复杂度。已经说过<code>find</code>操作所需时间和结点深度成正比，当然了，这也有前提，就是我们能够以常数时间找到表示元素的结点，而在当前这种数组表示方法下，这一点是肯定的。那么这个表示集合的树的深度可以有多大呢？假定元素个数为<code>N</code>，一开始就是<code>N</code>棵树，每棵树只有一个结点，我们对这些结点一个一个合并，将合并好的树的根节点指向将要被合并的单独的结点，这样每次合并，那棵大的树的深度就会加<code>１</code>，最后形成了一个刚好有<code>N</code>个结点的线性链的树，深度为<code>N-1</code>，这种情况我们称之为最坏情况。可以参考下图：</p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/Users/Sloriac/Programing/github/Blog/Algorithm/&#x7B97;&#x6CD5;&#x7406;&#x89E3;/&#x5E76;&#x67E5;&#x96C6;/&#x5E76;&#x67E5;&#x96C6;_&#x6811;&#x7684;&#x5408;&#x5E76;.png" alt=""></p>
+<p>&emsp;&emsp;所以，<code>find</code>操作最坏的运行时间为<code>O(N)</code>，那么在进行<code>M</code>次<code>find</code>操作的时候，最坏情形下的时间复杂度有可能达到<code>O(MN)</code>。<code>find</code>操作是可以再优化的，下节具体再谈。<br>&emsp;&emsp;对于<code>union</code>操作，如果忽略查找元素（结点）根结点的时间，那么其只需<code>O(1)</code>的时间。但是在这里，<code>union</code>和<code>find</code>是息息相关的，对于非根结点的结点的合并，其时间复杂度大约等于查找其根结点的时间。所以，如果有<code>M</code>次<code>find</code>操作和最多<code>N-1</code>次<code>union</code>操作的话，最坏的时间复杂度约为<code>O((M+N)N)</code>。这里的<code>union</code>操作也是可以优化的，因为这种合并的方式可能会出现最坏情况，使得算法运行的时间复杂度变得很高。所以我们要避免出现这种情况，具体优化请参考下一节。</p>
+<h3 id="2-3-">2.3、以树表示集合的两种优化</h3>
+<p>&emsp;&emsp;上一节介绍的以树表示集合的方法是需要优化的，一方面要避免最坏情况，并且要尽量降低树的深度，以便于进行<code>find</code>和<code>union</code>操作；另一方面，要想办法尽量降低<code>find</code>操作的时间复杂度，这样整体的时间复杂度就会降低。<br>&emsp;&emsp;《算法导论》一书中给出了两种启发式策略：<strong>按秩合并(union by rank)</strong>与<strong>路径压缩(pathcompression)</strong>。下面我们具体介绍一下。</p>
+<h4 id="2-3-1-">2.3.1、按秩合并</h4>
+<p>&emsp;&emsp;这是对合并的优化。2.2节的合并方式是很随意的，将一棵树指向另一棵树就完成了合并，这种随意性可能会使得某棵树的深度很大。现在，我们按秩合并(union by rank)，rank的选取一般有两种：<strong>树的大小</strong>与<strong>树的高度</strong>，即<strong>按大小合并(union by size)</strong>和<strong>按高度合并(union by height)</strong>。<br>&emsp;&emsp;按大小合并就是将结点少的树指向结点多的树。按高度合并就是将高度小的树指向高度大的树。这两种方法都可以保证树的深度不会超过<code>log(N)</code>[2]。这个是被证明了的，而我们呢，可以这样去简单理解一下。以按照高度合并为例，假定要被合并的两棵树的高度分别为<code>Hx</code>和<code>Hy</code>，合并后的树的高度为<code>H</code>，很容易得到下面的公式：   </p>
+<blockquote>
+<ul>
+<li><code>H = max(Hx, Hy)</code>，当<code>Hx != Hy</code>时</li>
+<li><code>H = Hx + 1</code>，当<code>Hx == Hy</code>时</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;对于<code>N</code>个元素，一开始都是单独的只有<code>1</code>个结点的树（集合），其高度均为<code>0</code>，要想得到高度为<code>1</code>的树，至少需要合并两棵高度为<code>0</code>的树，合并后结点数量至少为<code>2*1=2</code>；同理，要想得到高度为<code>2</code>的树，至少需要合并两棵高度为<code>1</code>的树，合并后结点数量至少为<code>2*2=4</code>...以此类推，如果需要得到高度为<code>h</code>的树，至少需要合并两个高度为<code>h-1</code>的树，所需结点数量至少为<code>2^h</code>。同时，很容易可以理解，高度为<code>h</code>的树至少所需结点数量是肯定要比高度为<code>h-1</code>的树至少所需结点数量高的，所以上述表述也可以反过来说：数量为<code>2^h</code>的结点，最多可以组成一个高度为<code>h</code>的树。<strong>需要说明一下，以上理解是我自己的想法，不保证合理以及正确性！</strong><br>&emsp;&emsp;下面给出按照高度合并的实现代码，这里需要保存一下每个结点的高度，可以用数组，也可以用结构体。下面给出使用数组的实现，保存高度的数组<code>height[]</code>的初始值为<code>0</code>。</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="storage type c"><span>void</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>union_set_height</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="storage type c"><span>int</span></span><span>&nbsp;x,&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;y</span><span class="punctuation section parens end c"><span>)</span></span></span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(x&nbsp;==&nbsp;y)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>find_set</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>x);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>find_set</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>y);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(x&nbsp;==&nbsp;y)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(height[x]&nbsp;&lt;&nbsp;height[y])</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sets[x]&nbsp;=&nbsp;y;</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="punctuation section block end c"><span>}</span></span></span><span class="keyword control c"><span>else</span></span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(height[x]&nbsp;==&nbsp;height[y])</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height[x]&nbsp;+=&nbsp;</span><span class="constant numeric c"><span>1</span></span><span>;</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sets[y]&nbsp;=&nbsp;x;</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="punctuation section block end c"><span>}</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></span></div></pre>
+<p>&emsp;&emsp;这个代码比较简单，是基于原来代码的改进，如果理解了上文我自己的那段证明，这段代码也不难理解。这种方式保证了树的最大深度不会超过<code>log(N)</code>，那么<code>find</code>操作的最坏时间也就是<code>O(log(N))</code>，<code>union</code>操作和整体的时间复杂度都有了很大的改进。</p>
+<h4 id="2-3-2-">2.3.2、路径压缩</h4>
+<p>&emsp;&emsp;这个是对<code>find</code>操作的优化，实际上是在<code>find</code>过程中对树的结构进行了优化。我们用树表示集合，其实用不到传统树中的所谓父结点子结点的关系，我们只关心两个结点的根节点，所以，以下两种树其实表示的是一个集合<code>{1, 2, 3, 4, 5}</code>：<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/Users/Sloriac/Programing/github/Blog/Algorithm/&#x7B97;&#x6CD5;&#x7406;&#x89E3;/&#x5E76;&#x67E5;&#x96C6;/&#x5E76;&#x67E5;&#x96C6;_&#x4E24;&#x79CD;&#x6811;&#x4E00;&#x4E2A;&#x96C6;&#x5408;.png" alt="">    </p>
+<p>&emsp;&emsp;我们很容易发现，上图右边的树结构更好，如果所有结点都直接指向根节点，那么<code>find</code>和<code>union</code>操作都可以以常数时间运行。此处暂停一段时间......有没有发现什么问题？！<br>&emsp;&emsp;问题来了，第一节中有说过<em>“已经证明二者不能同时以常数最坏情形运行时间执行[^2]。”</em>             二者是不是矛盾了？实际上是不矛盾的，因为右边那个树结构是理想的结构，一开始是肯定构造不出来的，或者说构造出来的时间复杂度很大，不值得。我们希望在    操作的时候顺便进行某种优化，使得树的结构不断趋于理想情况，也就是结点尽量离根结点更近！这样可以加快后续的操作，以期整体操作的时间复杂度可以降低！<br>&emsp;&emsp;我们从<code>find</code>操作入手，将2.2节中<code>find(x, y)</code>函数的实现由循环改为递归（当然了，循环也能实现，不过我感觉代码丑），先找到根结点，然后在回溯的时候，将路径上结点的父结点都改为根结点，示意图如下：<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/Users/Sloriac/Programing/github/Blog/Algorithm/&#x7B97;&#x6CD5;&#x7406;&#x89E3;/&#x5E76;&#x67E5;&#x96C6;/&#x5E76;&#x67E5;&#x96C6;_&#x8DEF;&#x5F84;&#x538B;&#x7F29;.png" alt=""><br>&emsp;&emsp;如上图，我们在一路向上查找到元素<code>5</code>的根节点后，回溯时候，顺便将路径上的结点(元素<code>2</code>和<code>5</code>)直接指向根结点，这样就可以加快下次查询。代码实现如下：</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="storage type c"><span>int</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>find_set_path</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="storage type c"><span>int</span></span><span>&nbsp;x</span><span class="punctuation section parens end c"><span>)</span></span></span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(x&nbsp;!=&nbsp;sets[x])</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sets[x]&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>find_set_path</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>sets[x]);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>return</span></span><span>&nbsp;sets[x];</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></span></div></pre>
+<p>&emsp;&emsp;抛开丑的函数名，代码是不是很漂亮！</p>
+<h4 id="2-3-3-">2.3.3、启发策略对运行时间的影响</h4>
+<p>&emsp;&emsp;单独使用上述两种启发策略的某一个，都可以改善操作的运行时间，如果两个都用效果会更好！《算法导论》上有证明，同时使用两种启发策略，对于一共<code>m</code>个并查集的操作，其最坏运行时间为<code>O(m*f(N))</code>，<code>f(N)</code>为一个增长很慢的函数，并且可以证明<code>f(N)&lt;=4</code>[1]，具体证明大家还是看书吧，好难的样子！</p>
+<h3 id="2-4-">2.4、以链表表示集合</h3>
+<p>&emsp;&emsp;《算法导论》一书中给出了一种链表表示集合的方法：每个集合有一个头元素，头元素包含两个指针<code>head</code>和<code>tail</code>，顾名思义，<code>head</code>指针指向链表的第一个元素，<code>tail</code>指针指向链表的最后一个元素；链表的每个元素也包含两个指针，一个指向头元素，另一个指向下一个元素。示意图如下所示：<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/Users/Sloriac/Programing/github/Blog/Algorithm/&#x7B97;&#x6CD5;&#x7406;&#x89E3;/&#x5E76;&#x67E5;&#x96C6;/&#x5E76;&#x67E5;&#x96C6;_&#x94FE;&#x8868;.png" alt=""><br>&emsp;&emsp;我不打算具体实现这种表示方法，感觉实现起来比较麻烦，如何找到代表某元素的结点是个问题，然后无论空间复杂度还是时间复杂度，都不是最佳选择。下面我们来分析一下这种方法的<code>find</code>和<code>union</code>操作。<br>&emsp;&emsp;<code>find</code>操作就比较简单了，直接就可以根据指针找到集合的头，再根据头里的<code>head</code>指针就可以找到代表该集合的第一个元素，时间复杂度是<code>O(1)</code>。对于<code>union</code>操作，假定要将链<code>Sx</code>与<code>Sy</code>合并，需要将<code>Sx</code>的尾元素指向<code>Sy</code>的第一个元素来完成两个链表的拼接，然后再将原来属于<code>Sy</code>链表的每个元素由指向<code>Sy</code>的头改为指向<code>Sx</code>的头，花费的时间和链表<code>Sy</code>的长度呈线性关系。最后再将<code>Sx</code>的<code>tail</code>指向原来<code>Sy</code>的尾元素，然后删除<code>Sy</code>的头，完成最终的合并。<br>&emsp;&emsp;链表表示就介绍到这里，具体的其他的内容请参考《算法导论》！</p>
+<h2 id="-">３、并查集的应用</h2>
+<p>&emsp;&emsp;并查集的应用有很多，比如求无向图的连通分量和最小生成树等等，题目也很多，这里就不举例了，后面会单独补充，请到博客查阅。   </p>
+<h2 id="-references">４、References</h2>
+<p>[1]:《算法导论》21 用于不相交集合的数据结构<br>[2]:《数据结构与算法分析》8 不相交集类</p></body>
+</html>
