@@ -16,7 +16,7 @@ My research interests include: Knowledge Graph, Machine Learning and Deep Learni
 ####Publications：
 * Wei Hu, Haoxuan Li, **Zequn Sun**, Xinqi Qian, Lingkun Xue, Ermei Cao, Yuzhong Qu.   
 **Clinga: Bringing Chinese Physical and Human Geography in Linked Open Data**. 
-*In Proceedings of the 15th International Semantic Web Conference (ISWC2016), to appear. *
+*To appear in Proceedings of the 15th International Semantic Web Conference (ISWC2016). *
 
 - - -
 
